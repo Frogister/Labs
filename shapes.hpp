@@ -1,6 +1,7 @@
 #ifndef SHAPES_HPP
 #define SHAPES_HPP
 
+#include "errorsandexceptions.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -23,7 +24,7 @@ class Circle : public Shape
 {
 public:
     Circle(const string &name, pair<double, double> center, double radiusCircle);
-    double perimeter() const;
+    double perimeter() const override;
     pair<double, double> getCenter();
     double getRadius() const;
     void setCenter(pair<double, double> center);
@@ -38,7 +39,7 @@ class Rectangle : public Shape
 {
 public:
     Rectangle(const string &name, pair<double, double> leftUpAngle, pair<double, double> rightDownAngle);
-    double perimeter() const;
+    double perimeter() const override;
     pair<double, double> getLeftUpAngle();
     pair<double, double> getRightDownAngle();
     void setLeftUpAngle(pair<double, double> leftUpAngle);
@@ -52,7 +53,7 @@ class Triangle : public Shape
 {
 public:
     Triangle(const string &name, pair<double, double> firstAngle, pair<double, double> secondAngle, pair<double, double> thirdAngle);
-    double perimeter() const;
+    double perimeter() const override;
     pair<double, double> getFirstAngle();
     pair<double, double> getSecondAngle();
     pair<double, double> getThirdAngle();

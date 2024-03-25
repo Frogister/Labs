@@ -8,13 +8,7 @@ string Shape::name()
 }
 
 Circle::Circle(const string &name, pair<double, double> center, double radius)
-        : Shape(name), center(std::move(center)), radiusCircle(radius)
-{
-    if (radiusCircle <= 0)
-    {
-        throw invalid_argument("Radius must be positive");
-    }
-}
+        : Shape(name), center(std::move(center)), radiusCircle(radius) {}
 
 double Circle::perimeter() const
 {
@@ -37,8 +31,8 @@ Rectangle::Rectangle(const string &name, pair<double, double> leftUpAngle, pair<
 
 double Rectangle::perimeter() const
 {
-    double width = abs(rightDownAngle.first - leftUpAngle.first);
-    double height = abs(rightDownAngle.second - leftUpAngle.second);
+    double width = fabs(rightDownAngle.first - leftUpAngle.first);
+    double height = fabs(rightDownAngle.second - leftUpAngle.second);
     return 2 * (width + height);
 }
 
@@ -113,56 +107,74 @@ pair<double, double> inputPoint()
 {
     double x, y;
     cin >> x >> y;
+    if (cin.fail())
+    {
+        throw NonViableNumber("Non viable number");
+    }
     return make_pair(x, y);
 }
 
 void addShape(vector<Shape *> &shapes)
 {
-    cout << "Choose type of shape: " << endl;
-    cout << "1. Circle" << endl;
-    cout << "2. Triangle" << endl;
-    cout << "3. Rectangle" << endl;
-    int type;
-    cin >> type;
-    if (type == 1)
-    {
-        cout << "Enter shape name: " << endl;
-        string name;
-        cin >> name;
-        cout << "Enter center: " << endl;
-        pair<double, double> center = inputPoint();
-        cout << "Enter radius: " << endl;
-        double radius;
-        cin >> radius;
-        shapes.push_back(new Circle(name, center, radius));
-    }
-    else if (type == 2)
-    {
-        cout << "Enter shape name: " << endl;
-        string name;
-        cin >> name;
-        cout << "Enter first angle: " << endl;
-        pair<double, double> firstAngle = inputPoint();
-        cout << "Enter second angle: " << endl;
-        pair<double, double> secondAngle = inputPoint();
-        cout << "Enter third angle: " << endl;
-        pair<double, double> thirdAngle = inputPoint();
-        shapes.push_back(new Triangle(name, firstAngle, secondAngle, thirdAngle));
-    }
-    else if (type == 3)
-    {
-        cout << "Enter shape name: " << endl;
-        string name;
-        cin >> name;
-        cout << "Enter left up angle: " << endl;
-        pair<double, double> leftUpAngle = inputPoint();
-        cout << "Enter right down angle: " << endl;
-        pair<double, double> rightDownAngle = inputPoint();
-        shapes.push_back(new Rectangle(name, leftUpAngle, rightDownAngle));
-    }
-    else
-    {
-        throw invalid_argument("Wrong input");
+    while (true) {
+        cout << "Choose type of shape: " << endl;
+        cout << "1. Circle" << endl;
+        cout << "2. Triangle" << endl;
+        cout << "3. Rectangle" << endl;
+        int type;
+        cin >> type;
+        while (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Enter number" << endl;
+        }
+        if (type == 1)
+        {
+            cout << "Enter shape name: " << endl;
+            string name;
+            cin >> name;
+            cout << "Enter center: " << endl;
+            pair<double, double> center = inputPoint();
+
+            cout << "Enter radius: " << endl;
+            double radius;
+            cin >> radius;
+            while (cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Enter number" << endl;
+            }
+            shapes.push_back(new Circle(name, center, radius));
+            break;
+        }
+        else if (type == 2)
+        {
+            cout << "Enter shape name: " << endl;
+            string name;
+            cin >> name;
+            cout << "Enter first angle: " << endl;
+            pair<double, double> firstAngle = inputPoint();
+            cout << "Enter second angle: " << endl;
+            pair<double, double> secondAngle = inputPoint();
+            cout << "Enter third angle: " << endl;
+            pair<double, double> thirdAngle = inputPoint();
+            shapes.push_back(new Triangle(name, firstAngle, secondAngle, thirdAngle));
+            break;
+        }
+        else if (type == 3)
+        {
+            cout << "Enter shape name: " << endl;
+            string name;
+            cin >> name;
+            cout << "Enter left up angle: " << endl;
+            pair<double, double> leftUpAngle = inputPoint();
+            cout << "Enter right down angle: " << endl;
+            pair<double, double> rightDownAngle = inputPoint();
+            shapes.push_back(new Rectangle(name, leftUpAngle, rightDownAngle));
+            break;
+        }
     }
 }
 
@@ -172,19 +184,19 @@ void printShapesParameters(const vector<Shape *> &shapes)
     for (int i = 0; i < shapes.size(); i++)
     {
         cout << i + 1 << ". ";
-        if (static_cast<Circle *>(shapes[i]) != nullptr)
+        if (dynamic_cast<Circle *>(shapes[i]) != nullptr)
         {
-            auto *circle = static_cast<Circle *>(shapes[i]);
+            auto *circle = dynamic_cast<Circle *>(shapes[i]);
             cout << "Circle: " << circle->name() << ", center: (" << circle->getCenter().first << ", " << circle->getCenter().second << "), radius: " << circle->getRadius() << endl;
         }
-        else if (static_cast<Triangle *>(shapes[i]) != nullptr)
+        else if (dynamic_cast<Triangle *>(shapes[i]) != nullptr)
         {
-            auto *triangle = static_cast<Triangle *>(shapes[i]);
+            auto *triangle = dynamic_cast<Triangle *>(shapes[i]);
             cout << "Triangle: " << triangle->name() << ", first angle: (" << triangle->getFirstAngle().first << ", " << triangle->getFirstAngle().second << "), second angle: (" << triangle->getSecondAngle().first << ", " << triangle->getSecondAngle().second << "), third angle: (" << triangle->getThirdAngle().first << ", " << triangle->getThirdAngle().second << ")" << endl;
         }
-        else if (static_cast<Rectangle *>(shapes[i]) != nullptr)
+        else if (dynamic_cast<Rectangle *>(shapes[i]) != nullptr)
         {
-            auto *rectangle = static_cast<Rectangle *>(shapes[i]);
+            auto *rectangle = dynamic_cast<Rectangle *>(shapes[i]);
             cout << "Rectangle: " << rectangle->name() << ", left up angle: (" << rectangle->getLeftUpAngle().first << ", " << rectangle->getLeftUpAngle().second << "), right down angle: (" << rectangle->getRightDownAngle().first << ", " << rectangle->getRightDownAngle().second << ")" << endl;
         }
     }
@@ -192,7 +204,7 @@ void printShapesParameters(const vector<Shape *> &shapes)
 
 void printShapesPerimeter(const vector<Shape *> &shapes)
 {
-    cout << "Perimeter of each shape:" << endl;
+    cout << "Perimeter of each shape:\n" << endl;
     for (const auto &shape : shapes)
     {
         cout << shape->name() << ": " << shape->perimeter() << endl;
@@ -228,6 +240,6 @@ void deleteShapeByIndex(vector<Shape *> &shapes, int index)
 void deleteShapeIfLessThanNum(vector<Shape *> &shapes, double personalPerimeter)
 {
     shapes.erase(remove_if(shapes.begin(), shapes.end(), [personalPerimeter](const Shape *shape) {
-        return shape->perimeter() < personalPerimeter;
+        return shape->perimeter() > personalPerimeter;
     }), shapes.end());
 }

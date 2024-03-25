@@ -2,7 +2,7 @@
 
 void callMenu()
 {
-    cout << "Menu: \n" << endl;
+    cout << "\nMenu: \n" << endl;
     cout << "1. Add a shape" << endl;
     cout << "2. Print numbered list of shapes with shape type and params" << endl;
     cout << "3. Print numbered list of shapes with shape type and perimeter" << endl;
@@ -10,29 +10,48 @@ void callMenu()
     cout << "5. Sort shapes by ascending perimeters" << endl;
     cout << "6. Delete shape by number" << endl;
     cout << "7. Delete shape by perimeters that are larger, than entered one" << endl;
-    cout << "8. Exit" << endl;
+    cout << "8. Exit\n" << endl;
 }
 
 int getDeletionIndex()
 {
     cout << "Enter position of shape, that you want to delete" << endl;
     int indexChoice = 0;
-    cin >> indexChoice;
-    if (indexChoice < 0)
-    {
-        cout << "Position can not be less, than 0" << endl;
+    while (true) {
+        cin >> indexChoice;
+        while (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Enter number" << endl;
+        }
+        if (indexChoice <= 0) {
+            cout << "Position can not be less, than 1" << endl;
+        }
+        else {
+            return indexChoice;
+        }
     }
-    return indexChoice;
 }
 
-double getDeletionPerimeter()
+double getDeletionPerimeter() // Здесь есть проверка на число
 {
-    cout << "Enter minimal perimeter for shapes (shapes, that have perimeter less, than that number, will be deleted)" << endl;
+    cout << "Enter maximum perimeter for shapes (shapes, that have perimeter larger, than that number, will be deleted)" << endl;
     int minPerimeter = 0;
-    cin >> minPerimeter;
-    if (minPerimeter < 0)
-    {
-        cout << "Perimeter can not be less, than 0" << endl;
+    while (true) {
+        cin >> minPerimeter;
+        while (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Enter number" << endl;
+        }
+        if (minPerimeter < 0)
+        {
+            cout << "Perimeter can not be less, than 0" << endl;
+        }
+        else {
+            return minPerimeter;
+        }
     }
-    return minPerimeter;
 }

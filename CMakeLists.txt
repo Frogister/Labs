@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.27)
-project(Lab1CLion)
+project(Lab1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Lab1CLion main.cpp
+add_executable(Lab1 main.cpp
         shapes.cpp
         shapes.hpp
         interface.cpp
-        interface.hpp)
+        interface.hpp
+        errorsandexceptions.hpp)

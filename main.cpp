@@ -2,48 +2,47 @@
 #include "shapes.hpp"
 
 int inputChoice();
-string error(int error);
 void operation(int choice, vector<Shape *> &shapes);
 
 int main()
 {
     vector<Shape *> shapes;
-    callMenu();
-    int menuChoice = inputChoice();
-    string errorMessage = error(menuChoice);
-    if (errorMessage.empty() != 0)
+    while (true)
     {
-        cout << errorMessage << endl;
-        return 0;
+        int menuChoice = 0;
+        callMenu();
+        cout << "Your choice: ";
+        try
+        {
+            menuChoice = inputChoice();
+        }
+        catch (NotNumber &error)
+        {
+            cout << error.errorMessage() << endl;
+        }
+        catch (NonViableNumber &error)
+        {
+            cout << error.errorMessage() << endl;
+        }
+        operation(menuChoice, shapes);
     }
-    cout << "You have chosen this option: " << menuChoice << endl;
-    operation(menuChoice, shapes);
-    return 0;
 }
 
 int inputChoice()
 {
     int choice = 0;
     cin >> choice;
+    if (cin.fail())
+    {
+        throw NotNumber("Not number");
+    }
     if (choice < 1 || choice > 8)
     {
-        return 0;
+        throw NonViableNumber("Non viable number");
     }
     else
     {
         return choice;
-    }
-}
-
-string error(int errorCode)
-{
-    if (errorCode == 0)
-    {
-        return "Invalid option";
-    }
-    else
-    {
-        return "";
     }
 }
 
