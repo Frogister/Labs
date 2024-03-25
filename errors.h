@@ -3,7 +3,6 @@
 
 #include "appcontext.h"
 
-int errorify(AppContext* context, const char* base);
-const char* getErrorMessage(int codeValue);
+void errorify(AppContext* context, const char* base, const char* input);
 
 #endif // ERRORS_H

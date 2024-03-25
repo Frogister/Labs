@@ -7,17 +7,22 @@ enum Operation
 {
     Translation,
     Initialization,
-    ErrorOperation,
-    SwapOperation,
-    CopyOperation
+    GetErrorCode,
+};
+
+enum Errors
+{
+    NoErrors,
+    BitOverload,
+    BadDigit,
+    NothingEnteredOrTranslated,
+    ThatsStupid
 };
 
 struct AppParams {
     const char* newValue;
-    const char* fromBase;
-    const char* toBase;
 };
 
-const char* doOperation(Operation operation, AppContext* context, AppParams* params);
+void doOperation(Operation operation, AppContext* context, AppParams* params);
 
 #endif // ENTRYPOINT_H

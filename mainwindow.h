@@ -1,8 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
-#include "appcontext.h"
+\
 #include <QMainWindow>
+#include "appcontext.h"
+
+#define NO_ERRORS ""
+#define BIT_OVERLOAD "Error: Value > 4 Byte Value"
+#define BAD_DIGIT "Error: Unsupported Digit"
+#define NOTHING_ENTERED_OR_TRANSLATED "Error: Nothing Entered Or Translated"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,7 +29,7 @@ private slots:
     void updateLabels();
     void onCopyClicked();
     void onSwapClicked();
-
+    void errorsOperation();
 private:
     Ui::MainWindow *ui;
 };

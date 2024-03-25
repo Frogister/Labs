@@ -2,8 +2,10 @@
 #define APPCONTEXT_H
 
 struct AppContext {
+    int errorCode;
     const char* translatedValue;
-    char errorLine[500];
+    const char* fromBase;
+    const char* toBase;
 };
 
 #endif // APPCONTEXT_H
