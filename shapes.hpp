@@ -18,6 +18,7 @@ public:
     virtual string name();
     explicit Shape(string inputName);
     virtual double perimeter() const = 0;
+    virtual ~Shape() = default;
 };
 
 class Circle : public Shape
@@ -35,6 +36,20 @@ private:
     double radiusCircle;
 };
 
+class Triangle : public Shape
+{
+public:
+    Triangle(const string &name, pair<double, double> firstAngle, pair<double, double> secondAngle, pair<double, double> thirdAngle);
+    double perimeter() const override;
+    pair<double, double> getFirstAngle(), getSecondAngle(), getThirdAngle();
+    void setFirstAngle(pair<double, double> firstAngle);
+    void setSecondAngle(pair<double, double> secondAngle);
+    void setThirdAngle(pair<double, double> thirdAngle);
+
+private:
+    pair<double, double> firstAngle, secondAngle, thirdAngle;
+};
+
 class Rectangle : public Shape
 {
 public:
@@ -49,28 +64,6 @@ private:
     pair<double, double> leftUpAngle, rightDownAngle;
 };
 
-class Triangle : public Shape
-{
-public:
-    Triangle(const string &name, pair<double, double> firstAngle, pair<double, double> secondAngle, pair<double, double> thirdAngle);
-    double perimeter() const override;
-    pair<double, double> getFirstAngle();
-    pair<double, double> getSecondAngle();
-    pair<double, double> getThirdAngle();
-    void setFirstAngle(pair<double, double> firstAngle);
-    void setSecondAngle(pair<double, double> secondAngle);
-    void setThirdAngle(pair<double, double> thirdAngle);
-
-private:
-    pair<double, double> firstAngle, secondAngle, thirdAngle;
-};
-
-void addShape(vector<Shape *> &shapes);
-void printShapesPerimeter(const vector<Shape *> &shapes);
-void printShapesParameters(const vector<Shape *> &shapes);
-void printSumPerimeters(const vector<Shape *> &shapes);
-void sortShapesFromDownToUp(vector<Shape *> &shapes);
-void deleteShapeByIndex(vector<Shape *> &shapes, int index);
-void deleteShapeIfLessThanNum(vector<Shape *> &shapes, double personalPerimeter);
+pair<double, double> inputPoint();
 
 #endif // SHAPES_HPP
