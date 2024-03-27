@@ -9,12 +9,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->comboBoxFrom->addItem(Десятичная);
-    ui->comboBoxFrom->addItem(Двоичная);
-    ui->comboBoxFrom->addItem(Восьмеричная);
-    ui->comboBoxTo->addItem(Десятичная);
-    ui->comboBoxTo->addItem(Двоичная);
-    ui->comboBoxTo->addItem(Восьмеричная);
+    ui->comboBoxFrom->addItem(intToString(DECIMAL));
+    ui->comboBoxFrom->addItem(intToString(BINARY));
+    ui->comboBoxFrom->addItem(intToString(OCTAL));
+    ui->comboBoxTo->addItem(intToString(DECIMAL));
+    ui->comboBoxTo->addItem(intToString(BINARY));
+    ui->comboBoxTo->addItem(intToString(OCTAL));
     connect(ui->translateButton, &QPushButton::clicked, this, &MainWindow::onTranslateClicked);
     connect(ui->copyButton, &QPushButton::clicked, this, &MainWindow::onCopyClicked);
     connect(ui->swapButton, &QPushButton::clicked, this, &MainWindow::onSwapClicked);
@@ -32,22 +32,14 @@ void MainWindow::onTranslateClicked() {
     std::string fromBase = ui->comboBoxFrom->currentText().toStdString();
     std::string toBase = ui->comboBoxTo->currentText().toStdString();
     const char* cStr = str.c_str();
-    const char* comboBoxStrFrom = fromBase.c_str();
-    const char* comboBoxStrTo = toBase.c_str();
+    int comboBoxStrFrom = atoi(fromBase.c_str());
+    int comboBoxStrTo = atoi(toBase.c_str());
     AppParams* param = (AppParams*)malloc(sizeof(AppParams));
     param->newValue = cStr;
     context.fromBase = comboBoxStrFrom;
     context.toBase = comboBoxStrTo;
-    doOperation(GetErrorCode, &context, param);
-    if (context.errorCode != NoErrors)
-    {
-        errorsOperation();
-    }
-    else
-    {
-        errorsOperation();
-        doOperation(Translation, &context, param);
-    }
+    doOperation(Validation, &context, param);
+    doOperation(Translation, &context, param);
     updateLabels();
     free(param);
 }
@@ -64,21 +56,20 @@ void MainWindow::onSwapClicked() {
     std::string newFromBase = ui->comboBoxTo->currentText().toStdString();
     std::string newToBase = ui->comboBoxFrom->currentText().toStdString();
     const char* newLineEditValue = lineEditValue.c_str();
-    const char* newComboBoxStrFrom = newFromBase.c_str();
-    const char* newComboBoxStrTo = newToBase.c_str();
+    int newComboBoxStrFrom = atoi(newFromBase.c_str());
+    int newComboBoxStrTo = atoi(newToBase.c_str());
     AppParams* param = (AppParams*)malloc(sizeof(AppParams));
     param->newValue = newLineEditValue;
     swapReplace(&context, param->newValue);
     context.fromBase = newComboBoxStrFrom;
     context.toBase = newComboBoxStrTo;
-    ui->comboBoxFrom->setCurrentText(newComboBoxStrFrom);
-    ui->comboBoxTo->setCurrentText(newComboBoxStrTo);
+    ui->comboBoxFrom->setCurrentText(intToString(newComboBoxStrFrom));
+    ui->comboBoxTo->setCurrentText(intToString(newComboBoxStrTo));
     param->newValue = newLineEditValue;
     ui->lineEdit->setText(param->newValue);
-    swapReplace(&context, param->newValue);
+    doOperation(SwapReplace, &context, param);
     doOperation(Translation, &context, param);
-    doOperation(GetErrorCode, &context, param);
-    errorsOperation();
+    doOperation(Validation, &context, param);
     updateLabels();
     free(param);
 }
@@ -105,6 +96,7 @@ void MainWindow::errorsOperation()
 void MainWindow::updateLabels() {
     if (context.errorCode != NoErrors) {
         ui->translatedValue->clear();
+        errorsOperation();
     }
     else
     {
