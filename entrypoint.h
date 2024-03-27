@@ -7,16 +7,8 @@ enum Operation
 {
     Translation,
     Initialization,
-    GetErrorCode,
-};
-
-enum Errors
-{
-    NoErrors,
-    BitOverload,
-    BadDigit,
-    NothingEnteredOrTranslated,
-    ThatsStupid
+    Validation,
+    SwapReplace
 };
 
 struct AppParams {

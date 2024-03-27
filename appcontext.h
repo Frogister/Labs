@@ -1,11 +1,12 @@
 #ifndef APPCONTEXT_H
 #define APPCONTEXT_H
+#include "errors.h"
 
 struct AppContext {
-    int errorCode;
+    Errors errorCode;
     const char* translatedValue;
-    const char* fromBase;
-    const char* toBase;
+    int fromBase;
+    int toBase;
 };
 
 #endif // APPCONTEXT_H

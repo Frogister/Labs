@@ -1,38 +1,35 @@
 #include "logic.h"
-#include "entrypoint.h"
 #include <QClipboard>
 #include <QApplication>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 
-void translate(AppContext* context, const char* newValue, const char* fromBase, const char* toBase) {
-    if (strcmp(fromBase, toBase) == 0) {
+void translate(AppContext* context, const char* newValue) {
+    if (context->fromBase == context->toBase) {
         context->translatedValue = newValue;
-    } else if (strcmp(fromBase, Десятичная) == 0 && strcmp(toBase, Двоичная) == 0) {
-        context->translatedValue = decimalToAll(newValue, 2);
-    } else if (strcmp(fromBase, Десятичная) == 0 && strcmp(toBase, Восьмеричная) == 0) {
-        context->translatedValue = decimalToAll(newValue, 8);
-    } else if (strcmp(fromBase, Двоичная) == 0 && strcmp(toBase, Десятичная) == 0) {
-        context->translatedValue = AllToDecimal(newValue, 2);
-    } else if (strcmp(fromBase, Двоичная) == 0 && strcmp(toBase, Восьмеричная) == 0) {
-        context->translatedValue = binaryToOctal(newValue);
-    } else if (strcmp(fromBase, Восьмеричная) == 0 && strcmp(toBase, Десятичная) == 0) {
-        context->translatedValue = AllToDecimal(newValue, 8);
-    } else if (strcmp(fromBase, Восьмеричная) == 0 && strcmp(toBase, Двоичная) == 0) {
+    } else if (context->fromBase == DECIMAL) {
+        context->translatedValue = decimalToAll(newValue, context->toBase);
+    } else if (context->toBase == DECIMAL) {
+        context->translatedValue = allToDecimal(newValue, context->fromBase);
+    } else if (context->fromBase == DECIMAL) {
+        context->translatedValue = decimalToAll(newValue, context->toBase);
+    } else if (context->fromBase == OCTAL && context->toBase == BINARY) {
         context->translatedValue = octalToBinary(newValue);
+    } else if (context->fromBase == BINARY && context->toBase == OCTAL) {
+        context->translatedValue = binaryToOctal(newValue);
     }
 }
 
-void setErrorCode(AppContext* context, const char* base, const char* input) {
+void validate(AppContext* context, const char* input) {
     context->errorCode = NoErrors;
     if (strcmp(input,"") == 0)
     {
         context->errorCode = NothingEnteredOrTranslated;
     }
-    if (strcmp(base, Десятичная) == 0) {
+    if (context->fromBase == DECIMAL) {
         for (int i = 0; input[i] != '\0'; ++i) {
-            if ((i == 0 && !(input[i] == '-' || isdigit(input[i]))) || (i > 0 && !isdigit(input[i]))) {
+            if ((i == 0 && !(input[i] == '-' || isdigit(input[i]))) || (i > 0 && !isdigit(input[i])) || (strlen(input) == 1 && input[i] == '-')) {
                 context->errorCode = BadDigit;
                 break;
             } else if (stringToInt(input) > pow(2, BIT_LIMIT_OVERALL - 1) || stringToInt(input) < -pow(2, BIT_LIMIT_OVERALL - 1)) {
@@ -40,7 +37,7 @@ void setErrorCode(AppContext* context, const char* base, const char* input) {
                 break;
             }
         }
-    } else if (strcmp(base, Двоичная) == 0) {
+    } else if (context->fromBase == BINARY) {
         for (int i = 0; input[i] != '\0'; ++i) {
             if (input[i] != '0' && input[i] != '1') {
                 context->errorCode = BadDigit;
@@ -50,7 +47,7 @@ void setErrorCode(AppContext* context, const char* base, const char* input) {
                 break;
             }
         }
-    } else if (strcmp(base, Восьмеричная) == 0) {
+    } else if (context->fromBase == OCTAL) {
         for (int i = 0; input[i] != '\0'; ++i) {
             if (input[i + 1] > '7' || input[i] == '-') {
                 context->errorCode = BadDigit;
@@ -62,6 +59,8 @@ void setErrorCode(AppContext* context, const char* base, const char* input) {
         }
     }
 }
+
+
 
 void initialize(AppContext* context) {
     context->translatedValue = DEFAULT_VALUE;
@@ -106,9 +105,9 @@ char* decimalToAll(const char* decimalStr, int baseTo)
     return result;
 }
 
-char* AllToDecimal(const char* AllStr, int baseFrom)
+char* allToDecimal(const char* AllStr, int baseFrom)
 {
-    long long decimal = 0;
+    int decimal = 0;
     int base = 1;
     int length = strlen(AllStr);
     for (int i = length - 1; i >= 0; --i)
@@ -117,13 +116,14 @@ char* AllToDecimal(const char* AllStr, int baseFrom)
         base *= baseFrom;
     }
     char* result = (char*)malloc(BIT_LIMIT_DECIMAL + 1);
-    snprintf(result, BIT_LIMIT_DECIMAL + 1, "%lld", decimal);
+    snprintf(result, BIT_LIMIT_DECIMAL + 1, "%d", decimal);
+    result[BIT_LIMIT_DECIMAL] = '\0';
     return result;
 }
 
 char* binaryToOctal(const char* binaryStr)
 {
-    char* decimal = AllToDecimal(binaryStr, 2);
+    char* decimal = allToDecimal(binaryStr, 2);
     char* result = decimalToAll(decimal, 8);
     free(decimal);
     return result;
@@ -131,7 +131,7 @@ char* binaryToOctal(const char* binaryStr)
 
 char* octalToBinary(const char* octalStr)
 {
-    char* decimal = AllToDecimal(octalStr, 8);
+    char* decimal = allToDecimal(octalStr, 8);
     char* result = decimalToAll(decimal, 2);
     free(decimal);
     return result;
