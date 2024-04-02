@@ -1,274 +1,257 @@
 #include "interface.hpp"
 
-void Menu::executeMenu()
+void Interface::executeInterface()
 {
-    vector<Shape *> shapes;
-    Menu::initializeMenuOptions();
-    int choice = 0;
+    exitInterface = 0;
+    initializeInterfaceOptions();
+    initializeFiguresOptions();
+    int choice;
     do
     {
-            Menu::callMenu();
-            cin >> choice;
-            try
-            {
-                if (Menu::menuOptions.find(choice) != Menu::menuOptions.end())
-                {
-                    Menu::menuOptions[choice](shapes);
-                }
-                else if (choice == 8)
-                {
-                    exit(0);
-                }
-                else
-                {
-                    cerr << "Non viable number, enter a number between 1 and 8";
-                }
-            }
-            catch (const NonViableNumber &error)
-            {
-                cerr << error.what() << endl;
-            }
-            catch (const NotNumber &error)
-            {
-                cerr << error.what() << endl;
-            }
-            catch (const EmptyList &error)
-            {
-                cerr << error.what() << endl;
-            }
-            catch (const BadDeletionPerimeter &error)
-            {
-                cerr << error.what() << endl;
-            }
-            catch (const BadDeletionIndex &error)
-            {
-                cerr << error.what() << endl;
-            }
-    } while (choice != 8);
+        callInterface();
+        cin >> choice;
+        cout << endl;
+        try
+        {
+            callMethod(choice);
+        }
+        catch (const NonViableNumberException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const NotNumberException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const EmptyListException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const BadDeletionPerimeterException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const BadDeletionIndexException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const InterfaceChoiceException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const FigureNonViableException &error)
+        {
+            cerr << error.what() << endl;
+        }
+        catch (const exception &error)
+        {
+            cerr << error.what() << endl;
+        }
+    } while (exitInterface == 0);
 }
 
-map<int, function<void(vector<Shape* > &)>> Menu::menuOptions;
-map<int, function<void(vector<Shape* > &)>> Menu::shapesOptions;
-
-void Menu::initializeShapesOptions() {
-    shapesOptions[1] = &Menu::addCircle;
-    shapesOptions[2] = &Menu::addTriangle;
-    shapesOptions[3] = &Menu::addRectangle;
+void Interface::initializeFiguresOptions() {
+    figuresOptions[1] = &Interface::addCircle;
+    figuresOptions[2] = &Interface::addTriangle;
+    figuresOptions[3] = &Interface::addRectangle;
 }
 
-void Menu::addShape(vector<Shape *> &shapes)
-{
-    Menu::initializeShapesOptions();
-    int choice;
-    cout << "Choose type of shape: (type the number of the shape)" << endl;
-    cout << "1. Circle" << endl;
-    cout << "2. Triangle" << endl;
-    cout << "3. Rectangle" << endl;
-    cin >> choice;
-    if (cin.fail())
-    {
-        throw NotNumber("Not number");
-    }
-    if (Menu::shapesOptions.find(choice) != Menu::shapesOptions.end())
-    {
-        Menu::shapesOptions[choice](shapes);
-        cout << "Shape add successful\n";
-    }
-    else
-    {
-        throw NonViableNumber("Non viable number");
-    }
+void Interface::addTriangle() {
+    Triangle *triangle = getTriangle();
+    figures.push_back(triangle);
 }
 
-void Menu::addCircle(vector<Shape *> &shapes)
-{
-    Menu::initializeShapesOptions();
-    cout << "Enter shape name: " << endl;
-    string name;
-    cin >> name;
-    cout << "Enter center: " << endl;
-    pair<double, double> center = inputPoint();
-    cout << "Enter radius: " << endl;
-    double radius;
-    cin >> radius;
-    shapes.push_back(new Circle(name, center, radius));
-}
-
-void Menu::addTriangle(vector<Shape *> &shapes)
-{
-    Menu::initializeShapesOptions();
-    cout << "Enter shape name: " << endl;
+Triangle *Interface::getTriangle() {
+    cout << "Enter figure name: " << endl;
     string name;
     cin >> name;
     cout << "Enter first angle: " << endl;
-    pair<double, double> firstAngle = inputPoint();
+    Point firstAngle(inputValue<double>(), inputValue<double>());
     cout << "Enter second angle: " << endl;
-    pair<double, double> secondAngle = inputPoint();
+    Point secondAngle(inputValue<double>(), inputValue<double>());
     cout << "Enter third angle: " << endl;
-    pair<double, double> thirdAngle = inputPoint();
-    shapes.push_back(new Triangle(name, firstAngle, secondAngle, thirdAngle));
+    Point thirdAngle(inputValue<double>(), inputValue<double>());
+    return new Triangle(name, firstAngle, secondAngle, thirdAngle);
 }
 
-void Menu::addRectangle(vector<Shape *> &shapes)
-{
-    Menu::initializeShapesOptions();
-    cout << "Enter shape name: " << endl;
+void Interface::addCircle() {
+    Circle *circle = getCircle();
+    figures.push_back(circle);
+}
+
+Circle *Interface::getCircle() {
+    cout << "Enter Figure name: " << endl;
+    string name;
+    cin >> name;
+    cout << "Enter center: " << endl;
+    Point center(inputValue<double>(), inputValue<double>());
+    cout << "Enter radius: " << endl;
+    double radius = (inputValue<double>());
+    return new Circle(name, center, radius);
+}
+
+void Interface::addRectangle() {
+    Rectangle *rectangle = getRectangle();
+    figures.push_back(rectangle);
+}
+
+Rectangle *Interface::getRectangle() {
+    cout << "Enter figure name: " << endl;
     string name;
     cin >> name;
     cout << "Enter left up angle: " << endl;
-    pair<double, double> leftUpAngle = inputPoint();
+    Point leftUpAngle(inputValue<double>(), inputValue<double>());
     cout << "Enter right down angle: " << endl;
-    pair<double, double> rightDownAngle = inputPoint();
-    shapes.push_back(new Rectangle(name, leftUpAngle, rightDownAngle));
+    Point rightDownAngle(inputValue<double>(), inputValue<double>());
+
+    return new Rectangle(name, leftUpAngle, rightDownAngle);
 }
 
-void Menu::printShapesParameters(vector<Shape *> &shapes)
+void Interface::addFigure() {
+    cout << "Choose type of Figure: (type the number of the Figure)" << endl;
+    cout << "1. Circle" << endl;
+    cout << "2. Triangle" << endl;
+    cout << "3. Rectangle" << endl;
+    int choice;
+    cin >> choice;
+    if (cin.fail()) {
+        throw NotNumberException(NOT_NUMBER);
+    }
+    callFigureMethod(choice);
+    cout << "Figure add successful\n";
+}
+
+void Interface::printFiguresParameters()
 {
-    listEmptinessCheck(shapes);
-    cout << "Numbered list of shapes with shape type and params: " << endl;
-    for (int i = 0; i < shapes.size(); i++)
-    {
-        cout << i + 1 << ". ";
-        if (dynamic_cast<Circle *>(shapes[i]) != nullptr)
-        {
-            auto *circle = dynamic_cast<Circle *>(shapes[i]);
-            cout << "Circle: " << circle->name() << ", center: (" << circle->getCenter().first << ", " << circle->getCenter().second << "), radius: " << circle->getRadius() << endl;
-        }
-        else if (dynamic_cast<Triangle *>(shapes[i]) != nullptr)
-        {
-            auto *triangle = dynamic_cast<Triangle *>(shapes[i]);
-            cout << "Triangle: " << triangle->name() << ", first angle: (" << triangle->getFirstAngle().first << ", " << triangle->getFirstAngle().second << "), second angle: (" << triangle->getSecondAngle().first << ", " << triangle->getSecondAngle().second << "), third angle: (" << triangle->getThirdAngle().first << ", " << triangle->getThirdAngle().second << ")" << endl;
-        }
-        else if (dynamic_cast<Rectangle *>(shapes[i]) != nullptr)
-        {
-            auto *rectangle = dynamic_cast<Rectangle *>(shapes[i]);
-            cout << "Rectangle: " << rectangle->name() << ", left up angle: (" << rectangle->getLeftUpAngle().first << ", " << rectangle->getLeftUpAngle().second << "), right down angle: (" << rectangle->getRightDownAngle().first << ", " << rectangle->getRightDownAngle().second << ")" << endl;
-        }
+    unsigned listCount = 1;
+    listEmptinessCheck(figures);
+    for (const auto &figure: figures) {
+        std::cout << listCount << ". ";
+        figure->showParameters();
+        listCount++;
     }
 }
 
-void Menu::printShapesPerimeter(vector<Shape *> &shapes)
+void Interface::printFiguresPerimeter()
 {
-    listEmptinessCheck(shapes);
-    cout << "Perimeter of each shape:\n" << endl;
-    for (const auto &shape : shapes)
-    {
-        cout << shape->name() << ": " << shape->perimeter() << endl;
+    unsigned listCount = 1;
+    listEmptinessCheck(figures);
+    cout << "Perimeter of each figure:\n" << endl;
+    for (const auto &figure: figures) {
+        std::cout << listCount << ". ";
+        figure->showPerimeter();
+        listCount++;
     }
 }
 
-void Menu::printSumPerimeters(vector<Shape *> &shapes)
+void Interface::printSumPerimeters()
 {
-    listEmptinessCheck(shapes);
+    listEmptinessCheck(figures);
     double sum = 0.0;
-    for (const auto &shape : shapes)
+    for (const auto &Figure : figures)
     {
-        sum += shape->perimeter();
+        sum += Figure->findPerimeter();
     }
     cout << "Sum of perimeters: " << sum << endl;
 }
 
-void Menu::sortShapesFromDownToUp(vector<Shape *> &shapes)
+void Interface::sortFiguresFromDownToUp()
 {
-    listEmptinessCheck(shapes);
-    sort(shapes.begin(), shapes.end(), comparePerimeters);
-    cout << "Shapes' list sorted" << endl;
+    listEmptinessCheck(figures);
+    sort(figures.begin(), figures.end(), comparePerimeters);
+    cout << "Figures' list sorted" << endl;
 }
 
-void Menu::deleteShapeByIndex(vector<Shape *> &shapes)
+void Interface::deleteFigureByIndex()
 {
-    listEmptinessCheck(shapes);
-    int index = getDeletionIndex();
-    if (index > shapes.size())
+    listEmptinessCheck(figures);
+    int index = inputValue<int>();
+    if (index > figures.size())
     {
-        throw BadDeletionIndex("Position is more, than a list size");
+        throw BadDeletionIndexException("Position is more, than a list size");
     }
-    delete shapes[index];
-    shapes.erase(shapes.begin() + index);
-    cout << "Shape deleted" << endl;
+    delete figures[index];
+    figures.erase(figures.begin() + index);
+    cout << "Figure deleted" << endl;
 }
 
-void Menu::deleteShapeIfLessThanNum(vector<Shape *> &shapes)
+void Interface::deleteFigureIfLargerThanNum()
 {
-    listEmptinessCheck(shapes);
-    double deletionValue = getDeletionPerimeter();
-    shapes.erase(remove_if(shapes.begin(), shapes.end(), [deletionValue](const Shape *shape)
+    listEmptinessCheck(figures);
+    auto deletionValue = inputValue<double>();
+    figures.erase(remove_if(figures.begin(), figures.end(), [deletionValue](Figure *Figure)
     {
-        return shape->perimeter() > deletionValue;
-    }), shapes.end());
+        return Figure->findPerimeter() > deletionValue;
+    }), figures.end());
 }
 
-void listEmptinessCheck(vector<Shape *> &shapes)
+void listEmptinessCheck(vector<Figure *> &Figures)
 {
-    if (shapes.empty())
+    if (Figures.empty())
     {
-        throw EmptyList("The list is empty");
+        throw EmptyListException(EMPTY_LIST);
     }
 }
 
-bool comparePerimeters(Shape* a, Shape* b)
+bool Interface::comparePerimeters(Figure* a, Figure* b)
 {
-    return (a->perimeter() < b->perimeter());
+    return (a->findPerimeter() < b->findPerimeter());
 }
 
-void Menu::initializeMenuOptions() {
-    menuOptions[1] = &Menu::addShape;
-    menuOptions[2] = &Menu::printShapesParameters;
-    menuOptions[3] = &Menu::printShapesPerimeter;
-    menuOptions[4] = &Menu::printSumPerimeters;
-    menuOptions[5] = &Menu::sortShapesFromDownToUp;
-    menuOptions[6] = &Menu::deleteShapeByIndex;
-    menuOptions[7] = &Menu::deleteShapeIfLessThanNum;
+void Interface::initializeInterfaceOptions() {
+    InterfaceOptions[1] = &Interface::addFigure;
+    InterfaceOptions[2] = &Interface::printFiguresParameters;
+    InterfaceOptions[3] = &Interface::printFiguresPerimeter;
+    InterfaceOptions[4] = &Interface::printSumPerimeters;
+    InterfaceOptions[5] = &Interface::sortFiguresFromDownToUp;
+    InterfaceOptions[6] = &Interface::deleteFigureByIndex;
+    InterfaceOptions[7] = &Interface::deleteFigureIfLargerThanNum;
+    InterfaceOptions[8] = &Interface::exitInterfaceExecute;
 }
 
-int getDeletionIndex()
-{
-    int indexChoice = 0;
-    cout << "Enter position of shape, that you want to delete (1 for first position)" << endl;
-    cin >> indexChoice;
-    if (cin.fail())
-    {
-        throw NotNumber("Not number");
+void Interface::callMethod(const int& methodName) {
+    auto it = InterfaceOptions.find(methodName);
+    if (it != InterfaceOptions.end()) {
+        (this->*(it->second))();
+    } else {
+        throw InterfaceChoiceException(INTERFACE_CHOICE_EXCEPTION);
     }
-    if (indexChoice < 1) {
-        cout << "Position can not be less, than 1" << endl;
-    }
-    else {
-        return indexChoice - 1;
-    }
-    return 0;
 }
 
-double getDeletionPerimeter()
-{
-    cout << "Enter maximum perimeter for shapes (shapes, that have perimeter larger, than this number, will be deleted)" << endl;
-    int minPerimeter = 0;
-    cin >> minPerimeter;
-    if (cin.fail())
-    {
-        throw BadDeletionPerimeter("");
+void Interface::callFigureMethod(const int &methodName) {
+    auto it = figuresOptions.find(methodName);
+    if (it != figuresOptions.end()) {
+        (this->*(it->second))();
+    } else {
+        throw NonViableNumberException(NON_VIABLE_NUMBER);
     }
-    if (minPerimeter < 0)
-    {
-        cout << "Perimeter can not be less, than 0" << endl;
-    }
-    else
-    {
-        return minPerimeter;
-    }
-    return 0;
 }
 
-void Menu::callMenu()
-{
-    cout << "\nMenu: \n" << endl;
-    cout << "1. Add a shape" << endl;
-    cout << "2. Print numbered list of shapes with shape type and params" << endl;
-    cout << "3. Print numbered list of shapes with shape type and perimeter" << endl;
-    cout << "4. Print sum of the perimeters of all shapes" << endl;
-    cout << "5. Sort shapes by ascending perimeters" << endl;
-    cout << "6. Delete shape by number" << endl;
-    cout << "7. Delete shape by perimeters that are larger, than entered one" << endl;
+void Interface::callInterface() {
+    cout << "\n\nInterface: \n" << endl;
+    cout << "1. Add a figure" << endl;
+    cout << "2. Print numbered list of figures with figure type and params" << endl;
+    cout << "3. Print numbered list of figures with figure type and perimeter" << endl;
+    cout << "4. Print sum of the perimeters of all figures" << endl;
+    cout << "5. Sort figures by ascending perimeters" << endl;
+    cout << "6. Delete figure by number" << endl;
+    cout << "7. Delete figure by perimeters that are larger, than entered one" << endl;
     cout << "8. Exit\n" << endl;
     cout << "Your choice: ";
+}
+
+void Interface::exitInterfaceExecute() {
+    exitInterface = 1;
+}
+
+template<typename T>
+T Interface::inputValue()
+{
+    T value;
+    cin >> value;
+    if (cin.fail())
+    {
+        throw NotNumberException(NOT_NUMBER);
+    }
+    return value;
 }

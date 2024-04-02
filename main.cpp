@@ -2,6 +2,8 @@
 
 int main()
 {
-    Menu::executeMenu();
+    Interface interface;
+    interface.executeInterface();
+
     return 0;
 }
