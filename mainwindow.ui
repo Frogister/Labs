@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1180</width>
+    <height>889</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="8" column="0">
+     <widget class="QPushButton" name="loadDataButton">
+      <property name="text">
+       <string>Load Data</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="loadFileButton">
+      <property name="text">
+       <string>Load File</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="0" colspan="2">
+     <widget class="QGroupBox" name="metrcsLayout">
+      <layout class="QFormLayout" name="metricsLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="minInfo">
+         <property name="text">
+          <string>Minimum:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="minimumLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="medInfo">
+         <property name="text">
+          <string>Medium:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="maxInfo">
+         <property name="text">
+          <string>Maximum:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="maximumLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="medianLabel">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="showGrid">
+       <bool>true</bool>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>false</bool>
+      </property>
+      <property name="cornerButtonEnabled">
+       <bool>false</bool>
+      </property>
+      <column>
+       <property name="text">
+        <string>Year</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Region</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>NPG</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Birth rate</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Death rate</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>GDW</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Urbanization</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QPushButton" name="calculateButton">
+      <property name="text">
+       <string>Calculate Metrics</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0" colspan="2">
+     <widget class="QGroupBox" name="errorLayout_2">
+      <layout class="QFormLayout" name="errorLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="errLine">
+         <property name="text">
+          <string>Everything is working normally (until u touch smth)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QGroupBox" name="inputLinesLayout">
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <layout class="QFormLayout" name="inputLayout">
+       <property name="rowWrapPolicy">
+        <enum>QFormLayout::DontWrapRows</enum>
+       </property>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="regionLine">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="columnIndexLine"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="regionInfo">
+         <property name="text">
+          <string>Enter region name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="columnInfo">
+         <property name="text">
+          <string>Enter column number</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="12" column="0" colspan="2">
+     <widget class="QGroupBox" name="linesInfoLayout_2">
+      <layout class="QFormLayout" name="linesInfoLayout">
+       <item row="0" column="1">
+        <widget class="QLabel" name="totalLines">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="totalSuccessfulLines">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="totalErrorLines">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="totalLinesInfo">
+         <property name="text">
+          <string>Total lines:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="totalSuccessfulLinesInfo">
+         <property name="text">
+          <string>Total successful lines:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="totalErrorLinesInfo">
+         <property name="text">
+          <string>Total error lines:</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QGroupBox" name="currentFileLayout_2">
+      <layout class="QFormLayout" name="currentFileLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="currentFileInfo">
+         <property name="text">
+          <string>Current file:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="currentFileLabel">
+         <property name="text">
+          <string>choose file, u bimbo</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1180</width>
+     <height>43</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
